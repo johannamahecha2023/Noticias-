@@ -7,12 +7,12 @@
       name="description"
       content="NewsWave, plataforma web de noticias desarrollada como proyecto academico del modulo de Desarrollo de Front-end."
     />
-    <title>NewsWave | Contacto</title>
+    <title>NewsWave | Favoritos</title>
     <link rel="stylesheet" href="assets/css/styles.css" />
     <script src="data/noticias-respaldo.js" defer></script>
     <script src="assets/js/datos.js" defer></script>
     <script src="assets/js/layout.js" defer></script>
-    <script src="assets/js/contacto.js" defer></script>
+    <script src="assets/js/favoritos.js" defer></script>
   </head>
   <body>
     <!-- ============================ Encabezado ============================ -->
@@ -33,8 +33,8 @@
         <nav class="menu" id="menu-principal" aria-label="Menú principal">
           <a href="index.html">Inicio</a>
           <a href="noticias.html">Noticias</a>
-          <a href="favoritos.html">Favoritos</a>
-          <a href="contacto.html" class="activo">Contacto</a>
+          <a href="favoritos.html" class="activo">Favoritos</a>
+          <a href="contacto.html">Contacto</a>
           <a href="acerca.html">Acerca de</a>
         </nav>
 
@@ -69,127 +69,21 @@
       <div class="barra-contexto">
         <div class="wrap">
           <p class="ruta">
-            <a href="index.html">Inicio</a> / <strong>Contacto</strong>
+            <a href="index.html">Inicio</a> / <strong>Favoritos</strong>
           </p>
-          <h1>Contáctanos</h1>
+          <h1>Mis noticias favoritas</h1>
           <p class="entradilla mt-8">
-            Escríbenos para enviar una noticia, reportar un error o resolver una
-            inquietud sobre el aplicativo.
+            Noticias que marcaste con la estrella. La lista se guarda en tu
+            navegador, sin necesidad de crear una cuenta.
           </p>
         </div>
       </div>
 
-      <div class="wrap contacto">
-        <form class="formulario" id="formulario-contacto" novalidate>
-          <h2 style="font-size: 24px">Formulario de contacto</h2>
-          <p class="meta mt-8">
-            Los campos marcados con <span style="color: var(--red)">*</span> son
-            obligatorios.
-          </p>
-
-          <div class="formulario__fila">
-            <div class="campo">
-              <label for="nombre"
-                >Nombre completo <span class="obligatorio">*</span></label
-              >
-              <input
-                type="text"
-                id="nombre"
-                name="nombre"
-                placeholder="Escribe tu nombre"
-              />
-            </div>
-            <div class="campo">
-              <label for="correo"
-                >Correo electrónico <span class="obligatorio">*</span></label
-              >
-              <input
-                type="email"
-                id="correo"
-                name="correo"
-                placeholder="nombre@correo.com"
-              />
-            </div>
-          </div>
-
-          <div class="formulario__fila">
-            <div class="campo">
-              <label for="telefono">Teléfono</label>
-              <input
-                type="tel"
-                id="telefono"
-                name="telefono"
-                placeholder="+57 300 000 0000"
-              />
-            </div>
-            <div class="campo">
-              <label for="asunto"
-                >Asunto <span class="obligatorio">*</span></label
-              >
-              <select id="asunto" name="asunto">
-                <option value="">Selecciona una opción</option>
-                <option>Enviar una noticia</option>
-                <option>Reportar un error</option>
-                <option>Sugerencias</option>
-                <option>Otro</option>
-              </select>
-            </div>
-          </div>
-
-          <div class="campo" style="margin-top: 18px">
-            <label for="mensaje"
-              >Mensaje <span class="obligatorio">*</span></label
-            >
-            <textarea
-              id="mensaje"
-              name="mensaje"
-              placeholder="Cuéntanos en qué podemos ayudarte…"
-            ></textarea>
-          </div>
-
-          <div class="formulario__acciones">
-            <button class="boton boton--primario" type="submit">
-              Enviar mensaje
-            </button>
-            <button class="boton boton--claro" type="reset">
-              Limpiar formulario
-            </button>
-          </div>
-
-          <p class="meta mt-16">
-            Las validaciones y el mensaje de confirmación corresponden al
-            siguiente punto de la Entrega 2.
-          </p>
-        </form>
-
-        <div>
-          <div class="panel">
-            <h3 style="font-size: 21px">Información de contacto</h3>
-            <p class="meta mt-16" style="line-height: 2.1">
-              contacto@newswave.co<br />
-              +57 601 000 0000<br />
-              Calle 100 # 15-20, Bogotá D. C.<br />
-              Lunes a viernes, 8:00 a 18:00
-            </p>
-          </div>
-          <img
-            class="mapa mt-24"
-            src="assets/img/noticia-03.jpg"
-            alt="Ubicación de la redacción"
-          />
-          <p class="meta mt-8">
-            Ubicación de la redacción (imagen de referencia).
-          </p>
-          <div class="panel panel--suave mt-24">
-            <h3 style="font-size: 19px">Preguntas frecuentes</h3>
-            <p class="meta mt-16" style="line-height: 1.9">
-              ¿Cómo guardo una noticia en favoritos?<br />
-              ¿Puedo publicar una noticia propia?<br />
-              ¿Cómo reporto un enlace roto?
-            </p>
-          </div>
+      <section class="seccion">
+        <div class="wrap" id="contenedor-favoritos">
+          <p class="entradilla">Cargando favoritos…</p>
         </div>
-      </div>
+      </section>
     </main>
 
     <!-- ============================== Pie ================================ -->

@@ -11,6 +11,8 @@ document.addEventListener("DOMContentLoaded", function () {
     return;
   }
 
+  form.addEventListener("reset", limpiarErrores);
+
   form.addEventListener("submit", function (evento) {
     evento.preventDefault();
 
@@ -21,31 +23,29 @@ document.addEventListener("DOMContentLoaded", function () {
     var correo = document.getElementById("correo");
     var asunto = document.getElementById("asunto");
     var mensaje = document.getElementById("mensaje");
+    var politica = document.getElementById("politica");
 
     var esValido = true;
 
     // Validar nombre
     if (!nombre.value.trim()) {
-      mostrarErrorCampo(nombre, "Por favor, escribe tu nombre completo.");
+      mostrarErrorCampo(nombre, "El nombre es obligatorio.");
       esValido = false;
     }
 
     // Validar correo
     var regexCorreo = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!correo.value.trim()) {
-      mostrarErrorCampo(correo, "El correo electrónico es obligatorio.");
-      esValido = false;
-    } else if (!regexCorreo.test(correo.value.trim())) {
+    if (!correo.value.trim() || !regexCorreo.test(correo.value.trim())) {
       mostrarErrorCampo(
         correo,
-        "Por favor, ingresa un correo electrónico válido.",
+        "El correo electrónico debe tener un formato válido (ejemplo: nombre@correo.com).",
       );
       esValido = false;
     }
 
     // Validar asunto
     if (!asunto.value) {
-      mostrarErrorCampo(asunto, "Selecciona una opción de asunto.");
+      mostrarErrorCampo(asunto, "El asunto es obligatorio.");
       esValido = false;
     }
 
@@ -53,7 +53,16 @@ document.addEventListener("DOMContentLoaded", function () {
     if (!mensaje.value.trim() || mensaje.value.trim().length < 10) {
       mostrarErrorCampo(
         mensaje,
-        "El mensaje debe contener al menos 10 caracteres.",
+        "El mensaje debe tener al menos 10 caracteres.",
+      );
+      esValido = false;
+    }
+
+    // Validar aceptacion de la politica de datos
+    if (!politica.checked) {
+      mostrarErrorCampo(
+        politica,
+        "Debe aceptar la política de tratamiento de datos personales.",
       );
       esValido = false;
     }
@@ -64,26 +73,25 @@ document.addEventListener("DOMContentLoaded", function () {
   });
 
   function mostrarErrorCampo(elemento, mensajeTexto) {
-    elemento.style.borderColor = "var(--red, #C8102E)";
-
     var contenedorCampo = elemento.closest(".campo");
-    if (contenedorCampo) {
-      var errorDiv = document.createElement("div");
-      errorDiv.className = "error-mensaje";
-      errorDiv.style.color = "var(--red, #C8102E)";
-      errorDiv.style.fontSize = "12px";
-      errorDiv.style.marginTop = "4px";
-      errorDiv.textContent = mensajeTexto;
-      contenedorCampo.appendChild(errorDiv);
+    if (!contenedorCampo) {
+      return;
     }
+
+    var error = document.createElement("p");
+    error.className = "campo__error";
+    error.textContent = "⚠ " + mensajeTexto;
+
+    contenedorCampo.classList.add("campo--error");
+    contenedorCampo.appendChild(error);
   }
 
   function limpiarErrores() {
-    var inputs = form.querySelectorAll("input, select, textarea");
-    for (var i = 0; i < inputs.length; i++) {
-      inputs[i].style.borderColor = "";
+    var campos = form.querySelectorAll(".campo--error");
+    for (var i = 0; i < campos.length; i++) {
+      campos[i].classList.remove("campo--error");
     }
-    var mensajesError = form.querySelectorAll(".error-mensaje");
+    var mensajesError = form.querySelectorAll(".campo__error");
     for (var j = 0; j < mensajesError.length; j++) {
       mensajesError[j].remove();
     }
@@ -92,10 +100,10 @@ document.addEventListener("DOMContentLoaded", function () {
   function mostrarExito() {
     form.innerHTML =
       "" +
-      '<div class="estado" style="padding: 32px 0;">' +
-      '  <div style="font-size: 40px; color: #28a745;">&#10004;</div>' +
+      '<div class="estado">' +
+      '  <div class="estado__icono estado__icono--exito">&#10004;</div>' +
       '  <h3 class="mt-16">¡Mensaje enviado con éxito!</h3>' +
-      '  <p class="meta mt-8">Gracias por contactarnos. Nuestro equipo revisará tu solicitud y te responderá pronto.</p>' +
+      '  <p class="meta mt-8">Hemos recibido tu solicitud y la redacción responderá al correo registrado en un plazo máximo de dos días hábiles.</p>' +
       '  <a class="boton boton--oscuro mt-24" href="index.html">Volver al inicio</a>' +
       "</div>";
   }

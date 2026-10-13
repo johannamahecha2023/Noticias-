@@ -13,13 +13,8 @@ document.addEventListener("DOMContentLoaded", function () {
 
   NW.cargarDatos()
     .then(function (datos) {
-      // Cargar también las noticias custom del localStorage para que el detalle las encuentre
-      try {
-        var custom = localStorage.getItem("newswave_custom");
-        if (custom) {
-          datos.noticias = JSON.parse(custom).concat(datos.noticias);
-        }
-      } catch (e) {}
+      // Se incluyen las noticias creadas por el usuario para poder mostrarlas.
+      datos.noticias = NW.todasLasNoticias(datos);
 
       var id = Number(NW.parametro("id"));
       var noticia = datos.noticias.filter(function (n) {
@@ -40,6 +35,8 @@ document.addEventListener("DOMContentLoaded", function () {
       document.title = noticia.titulo + " | NewsWave";
       pintarNoticia(datos, noticia);
       pintarLateral(datos, noticia);
+      NW.sincronizarFavoritos();
+      conectarCompartir(noticia);
     })
     .catch(function (error) {
       NW.mostrarError(contenedor, error.message);
@@ -100,7 +97,8 @@ document.addEventListener("DOMContentLoaded", function () {
       noticia.id +
       '">' +
       "      &#9734; Agregar a favoritos</button>" +
-      '    <a class="boton boton--claro boton--pequeno" href="contacto.html">Contactar</a>' +
+      '    <a class="boton boton--claro boton--pequeno" href="contacto.html">&#9993; Contactar</a>' +
+      '    <button class="boton boton--claro boton--pequeno" type="button" id="btn-compartir">&#8599; Compartir</button>' +
       "  </div>" +
       "</div>" +
       '<img class="detalle__imagen" src="' +
@@ -155,6 +153,9 @@ document.addEventListener("DOMContentLoaded", function () {
       "    <dt>Lectura</dt><dd>" +
       noticia.lectura +
       " min</dd>" +
+      '    <dt>Estado</dt><dd data-estado-favorito="' +
+      noticia.id +
+      '"></dd>' +
       "  </dl>" +
       "</div>" +
       '<h3 class="mt-24" style="font-size:21px">Noticias relacionadas</h3>' +
@@ -187,5 +188,36 @@ document.addEventListener("DOMContentLoaded", function () {
       '  <p class="meta mt-8">Escríbenos y la redacción revisará tu aporte.</p>' +
       '  <a class="boton boton--oscuro boton--pequeno mt-16" href="contacto.html">Ir al formulario</a>' +
       "</div>";
+  }
+
+  /**
+   * Comparte la noticia con el menu nativo del dispositivo; si el navegador
+   * no lo soporta, copia el enlace al portapapeles.
+   */
+  function conectarCompartir(noticia) {
+    var boton = document.getElementById("btn-compartir");
+    if (!boton) {
+      return;
+    }
+
+    boton.addEventListener("click", function () {
+      var enlace = window.location.href;
+
+      if (navigator.share) {
+        navigator.share({ title: noticia.titulo, text: noticia.resumen, url: enlace })
+          .catch(function () {}); // el usuario cerro el menu
+        return;
+      }
+
+      if (navigator.clipboard && window.isSecureContext) {
+        navigator.clipboard.writeText(enlace).then(function () {
+          boton.innerHTML = "&#10004; Enlace copiado";
+          setTimeout(function () { boton.innerHTML = "&#8599; Compartir"; }, 2000);
+        });
+        return;
+      }
+
+      window.prompt("Copia el enlace de la noticia:", enlace);
+    });
   }
 });

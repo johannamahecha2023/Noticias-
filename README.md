@@ -1,10 +1,12 @@
 # NewsWave — Prototipo funcional 
 
 Plataforma web de noticias desarrollada para el módulo **Desarrollo de Front-end**.
-Esta versión corresponde a los dos primeros puntos de la Entrega 2:
+Esta versión corresponde a la Entrega 2:
 
 1. **Desarrollo en HTML, CSS y JavaScript**
 2. **Renderizado dinámico del catálogo desde un archivo JSON**
+3. **Favoritos y gestión de noticias propias (crear, editar y eliminar)**
+4. **Formulario de contacto con validaciones**
 
 No se utilizan librerías ni frameworks externos: todo está resuelto con HTML5,
 CSS3 y JavaScript estándar (ES5/ES6 compatible con los navegadores actuales).
@@ -37,27 +39,32 @@ editarse a mano.
 ## Estructura del proyecto
 
 ```
-newswave-app/
+Noticias-/
 ├── index.html              Página de inicio
 ├── noticias.html           Listado con filtros, búsqueda y paginación
 ├── detalle.html            Detalle de una noticia (recibe ?id=)
-├── favoritos.html          Lista de favoritos (pendiente: punto 3)
-├── contacto.html           Formulario de contacto (pendiente: punto 4)
+├── favoritos.html          Favoritos guardados y gestión de noticias propias
+├── contacto.html           Formulario de contacto con validaciones
 ├── acerca.html             Página informativa del proyecto
 ├── assets/
 │   ├── css/
 │   │   └── styles.css      Hoja de estilos única, comentada por secciones
 │   ├── js/
-│   │   ├── datos.js        Carga del JSON y utilidades compartidas
-│   │   ├── layout.js       Menú responsivo, buscador y estado activo
+│   │   ├── datos.js        Carga del JSON, localStorage y utilidades compartidas
+│   │   ├── layout.js       Menú responsivo, buscador, fecha y botón de favorito
 │   │   ├── inicio.js       Render de la página de inicio
 │   │   ├── noticias.js     Filtros, búsqueda, orden y paginación
-│   │   └── detalle.js      Render de la noticia y del panel lateral
+│   │   ├── detalle.js      Render de la noticia y del panel lateral
+│   │   ├── favoritos.js    Lista de favoritos y CRUD de noticias propias
+│   │   └── contacto.js     Validación del formulario de contacto
 │   └── img/                Imágenes de las noticias
 └── data/
     ├── noticias.json       Fuente de datos del aplicativo
     └── noticias-respaldo.js  Copia generada del JSON (modo file://)
 ```
+
+Cada página carga los scripts en este orden: `noticias-respaldo.js`, `datos.js`,
+`layout.js` y, por último, el archivo de su vista.
 
 ---
 
@@ -90,12 +97,16 @@ genera a partir de él:
 
 - **Inicio:** noticia principal (campo `principal`), tres destacadas (campo
   `destacada`), tarjetas de categorías y los contadores del encabezado.
-- **Listado:** las 12 noticias con filtro por categoría, búsqueda por título y
-  resumen (sin distinguir tildes ni mayúsculas), ordenamiento por fecha o título
-  y paginación de 8 noticias por página.
+- **Listado:** las 12 noticias (más las creadas por el usuario) con filtro por
+  categoría, búsqueda en título, resumen, categoría, etiquetas y contenido (sin
+  distinguir tildes ni mayúsculas), ordenamiento por fecha o título y paginación
+  de 8 noticias por página. El buscador de la cabecera, presente en todas las
+  páginas, lleva al listado con la búsqueda aplicada (`noticias.html?q=texto`).
 - **Detalle:** la noticia se ubica por el parámetro `?id=` de la dirección; si el
   identificador no existe se muestra un mensaje de error con un enlace de regreso.
-  El panel lateral calcula las noticias relacionadas por categoría.
+  El panel lateral muestra si la noticia está en favoritos y calcula las
+  noticias relacionadas por categoría. El botón *Compartir* usa el menú nativo
+  del dispositivo o, si no existe, copia el enlace.
 
 Para agregar una noticia basta con añadir un objeto al arreglo `noticias` del
 archivo JSON: el sitio la muestra sin tocar el HTML.
@@ -123,16 +134,40 @@ archivo JSON: el sitio la muestra sin tocar el HTML.
 
 ---
 
-## Pendiente para los siguientes puntos de la entrega
+## Punto 3 — Favoritos
 
-- **Punto 3 — Favoritos:** almacenar la lista con `localStorage` y mostrarla en
-  `favoritos.html`. El botón de estrella ya existe en las tarjetas y cambia de
-  estado visual, pero todavía no guarda la selección.
-- **Punto 4 — Formularios con validaciones:** validar los campos obligatorios y
-  el formato del correo en `contacto.html`, con mensajes de error y de
-  confirmación.
-- **Punto 5 — Código estructurado:** revisión final y documentación del código.
-- **Punto 6 — Repositorio en GitHub:** publicación del proyecto.
+La estrella de cada tarjeta guarda o quita la noticia en `localStorage`
+(clave `newswave_favoritos`). En `favoritos.html` se listan las noticias
+guardadas con la fecha de la última actualización de la lista, y se pueden
+ordenar por fecha, quitar una a una o vaciar la lista.
+La misma página incluye un panel de gestión de noticias propias:
+
+- **Crear:** título, resumen, categoría e imagen del equipo (se guarda en base64).
+- **Leer:** las noticias creadas aparecen en favoritos y pueden abrirse en el detalle.
+- **Editar:** el botón *Editar* de la tarjeta carga sus datos en el formulario; si
+  no se elige otra imagen se conserva la actual.
+- **Eliminar:** al quitar de favoritos una noticia propia, esta se borra.
+
+Se guardan en `localStorage` con la clave `newswave_custom`.
+
+## Punto 4 — Formulario con validaciones
+
+`contacto.html` valida los campos obligatorios (nombre, correo, asunto y
+mensaje), el formato del correo, la longitud mínima del mensaje (10 caracteres)
+y la aceptación de la política de datos. Muestra el error debajo de cada campo
+y, si todo es correcto, reemplaza el formulario por un mensaje de confirmación
+con el plazo de respuesta.
+
+## Punto 5 — Código estructurado
+
+Un archivo común (`datos.js`, objeto `NW`) y un archivo JavaScript por vista. La
+hoja de estilos está dividida en siete secciones comentadas: variables y reset,
+utilidades, encabezado y menú, pie de página, componentes, vistas y diseño
+responsivo.
+
+## Punto 6 — Repositorio en GitHub
+
+https://github.com/johannamahecha2023/Noticias-
 
 ---
 
